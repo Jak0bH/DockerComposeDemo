@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    volumes:
+      - ./db-script.php:/app/db-script.php
+    entrypoint:
+      - php
+      - /app/db-script.php
+    networks:
+      - my-network
+    depends_on:
+      - db
+
+  webserver:
+    image: nginx
+    ports:
+      - 4050:80
+
+  db:
+    image: mariadb:10-jammy
+    volumes:
+      - ./database:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: web
+      MYSQL_ROOT_PASSWORD: kreativling420
+    networks:
+      - my-network
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    ports:
+      - 8080:80
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    ipam:
+      config:
+        - subnet: 10.0.2.0/24
