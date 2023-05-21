@@ -1,42 +1,52 @@
 services:
+  # tag::backend[]
   backend:
     build:
       context: .
-      dockerfile: backend.Dockerfile
+      dockerfile: backend.Dockerfile # <1>
     volumes:
-      - ./db-script.php:/app/db-script.php
+      - ./db-script.php:/app/db-script.php # <2>
     entrypoint:
       - php
       - /app/db-script.php
     networks:
-      - my-network
+      - my-network # <3>
     depends_on:
       - db
+  # end::backend[]
 
+  # tag::webserver[]
   webserver:
     image: nginx
     ports:
       - 4050:80
+  # end::webserver[]
 
+  # tag::db[]
   db:
-    image: mariadb:10-jammy
+    image: mariadb:10-jammy # <1>
     volumes:
-      - ./database:/var/lib/mysql
+      - ./database:/var/lib/mysql # <2>
     environment:
       MYSQL_DATABASE: web
       MYSQL_ROOT_PASSWORD: kreativling420
     networks:
-      - my-network
+      - my-network # <3>
+  # end::db[]
 
+  # tag::phpmyadmin[]
   phpmyadmin:
-    image: phpmyadmin:5
+    image: phpmyadmin:5 # <1>
     ports:
       - 8080:80
     networks:
       - my-network
+  # end::phpmyadmin[]
 
+# tag::networks[]
 networks:
   my-network:
     ipam:
       config:
-        - subnet: 10.0.2.0/24
+        - subnet: 10.0.2.0/24 # <1>
+# end::networks[]

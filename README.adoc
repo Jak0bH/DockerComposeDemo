@@ -1,0 +1,45 @@
+:toc-placement!:
+:sourcedir: src/main/java
+:icons: font
+:sectnums:
+:toc: left
+:experimental:
+
+== Services
+=== Backend
+[source,yaml]
+----
+include::docker-compose.yaml[tag=backend,indent=0]
+----
+<1> `backend.Dockerfile` is used over `Dockerfile` to allow multiple Dockerfiles to co-exist
+<2> mount in the script we want to run
+<3> connect the container to our network to allow communicating with the DB
+
+=== Webserver
+[source,yaml]
+----
+include::docker-compose.yaml[tag=webserver,indent=0]
+----
+
+=== Database
+[source,yaml]
+----
+include::docker-compose.yaml[tag=db,indent=0]
+----
+<1> pin image to MySQL 10 running in Ubuntu 22.04 Jammy to avoid breaking changes
+<2> bind mount to persist data
+<3> connect to network to allow communication with backend
+
+=== PHPMyAdmin
+[source,yaml]
+----
+include::docker-compose.yaml[tag=phpmyadmin,indent=0]
+----
+<1> pin image to v5 to avoid breaking changes
+
+== Networks
+[source,yaml]
+----
+include::docker-compose.yaml[tag=networks,indent=0]
+----
+<1> Set the subnet to a fixed /24 range
